@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조은시스템 노무·급여 도우미</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root {
+  --bg: #F4F3EF;
+  --surface: #FFFFFF;
+  --surface2: #F9F8F5;
+  --border: #E8E6E0;
+  --border2: #D8D5CE;
+  --text1: #1C1B18;
+  --text2: #6B6860;
+  --text3: #A09D96;
+  --accent: #1A6B52;
+  --accent-light: #E8F5F0;
+  --accent-mid: #2E8B6A;
+  --accent-dark: #134D3C;
+  --warn: #92400E;
+  --warn-bg: #FEF3C7;
+  --info: #1E40AF;
+  --info-bg: #EFF6FF;
+  --purple: #4C1D95;
+  --purple-bg: #F5F3FF;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --shadow: 0 1px 4px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:15px;}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);min-height:100vh;color:var(--text1);}
+
+/* ───── Setup ───── */
+#setup{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background: linear-gradient(135deg, #0f2419 0%, #1a6b52 50%, #0f3329 100%);
+}
+.setup-box{
+  background:var(--surface);border-radius:var(--r-xl);
+  padding:40px;width:100%;max-width:440px;
+  box-shadow:0 24px 64px rgba(0,0,0,.18);
+}
+.setup-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.setup-brand .ico{
+  width:44px;height:44px;background:var(--accent);border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.setup-brand .ico i{font-size:22px;color:#fff;}
+.setup-brand h1{font-size:17px;font-weight:600;color:var(--text1);line-height:1.3;}
+.setup-brand p{font-size:12px;color:var(--text3);margin-top:2px;}
+.setup-box h2{font-size:15px;font-weight:600;color:var(--text1);margin-bottom:6px;}
+.setup-box .desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:20px;}
+.steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.step{display:flex;gap:10px;align-items:flex-start;}
+.step-n{width:20px;height:20px;border-radius:50%;background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-t{font-size:13px;color:var(--text2);line-height:1.6;}
+.step-t a{color:var(--accent);text-decoration:none;font-weight:500;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;}
+.field input{
+  width:100%;padding:10px 14px;
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  font-size:13px;font-family:monospace;color:var(--text1);
+  outline:none;transition:border-color .15s,box-shadow .15s;background:var(--surface2);
+}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,107,82,.12);}
+.btn-primary{
+  width:100%;padding:12px;border:none;
+  background:var(--accent);color:#fff;
+  border-radius:var(--r-sm);font-size:14px;font-weight:600;
+  font-family:'Pretendard',sans-serif;cursor:pointer;
+  transition:background .15s;letter-spacing:.01em;
+}
+.btn-primary:hover{background:var(--accent-dark);}
+.setup-note{
+  margin-top:14px;padding:10px 13px;
+  background:var(--warn-bg);border-radius:var(--r-sm);
+  font-size:12px;color:var(--warn);line-height:1.6;
+  display:flex;gap:7px;align-items:flex-start;
+}
+.setup-note i{font-size:14px;flex-shrink:0;margin-top:1px;}
+
+/* ───── Layout ───── */
+#app{display:none;min-height:100vh;flex-direction:column;}
+.topbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 24px;height:60px;display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;z-index:100;
+}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand .ico{width:34px;height:34px;background:var(--accent);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;}
+.brand .ico i{font-size:17px;color:#fff;}
+.brand-name{font-size:15px;font-weight:600;color:var(--text1);}
+.brand-sub{font-size:11px;color:var(--text3);}
+.topbar-badges{display:flex;gap:5px;margin-left:12px;}
+.badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;}
+.bdg-g{background:var(--accent-light);color:var(--accent);}
+.bdg-b{background:var(--info-bg);color:var(--info);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.btn-ghost{
+  font-size:12px;padding:5px 12px;border-radius:20px;
+  background:transparent;color:var(--text3);
+  border:1px solid var(--border);cursor:pointer;
+  font-family:'Pretendard',sans-serif;transition:all .15s;
+}
+.btn-ghost:hover{background:var(--surface2);color:var(--text2);}
+
+/* ───── Nav Tabs ───── */
+.nav{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 24px;display:flex;gap:2px;
+}
+.nav-btn{
+  padding:14px 16px;border:none;background:transparent;
+  font-size:13px;font-family:'Pretendard',sans-serif;
+  color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;
+  display:flex;align-items:center;gap:6px;transition:all .15s;
+  white-space:nowrap;
+}
+.nav-btn i{font-size:15px;}
+.nav-btn:hover{color:var(--text2);}
+.nav-btn.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:500;}
+
+/* ───── Content ───── */
+.content{flex:1;padding:24px;max-width:1000px;margin:0 auto;width:100%;}
+
+/* ───── Chat ───── */
+.chat-layout{display:flex;flex-direction:column;gap:12px;height:calc(100vh - 160px);}
+.chat-box{
+  background:var(--surface);border-radius:var(--r-lg);
+  border:1px solid var(--border);
+  flex:1;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:var(--shadow);
+}
+#msgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;}
+#msgs::-webkit-scrollbar{width:4px;}
+#msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+.msg{display:flex;gap:10px;max-width:86%;}
+.msg.u{align-self:flex-end;flex-direction:row-reverse;}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.av.b{background:var(--accent-light);}
+.av.b i{font-size:13px;color:var(--accent);}
+.av.u{background:var(--surface2);border:1px solid var(--border);}
+.av.u i{font-size:13px;color:var(--text2);}
+.bbl{padding:11px 15px;border-radius:14px;font-size:13.5px;line-height:1.7;}
+.msg.b .bbl{background:var(--surface2);color:var(--text1);border-radius:3px 14px 14px 14px;border:1px solid var(--border);}
+.msg.u .bbl{background:var(--accent);color:#fff;border-radius:14px 3px 14px 14px;}
+.msg-time{font-size:11px;color:var(--text3);margin-top:4px;}
+.typing-row{display:flex;gap:10px;}
+.typing-bbl{display:flex;align-items:center;gap:5px;padding:11px 15px;background:var(--surface2);border-radius:3px 14px 14px 14px;border:1px solid var(--border);}
+.typing-bbl span{width:6px;height:6px;border-radius:50%;background:var(--border2);animation:bk 1.2s infinite;}
+.typing-bbl span:nth-child(2){animation-delay:.2s;}.typing-bbl span:nth-child(3){animation-delay:.4s;}
+@keyframes bk{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+.quick-bar{padding:10px 16px;border-top:1px solid var(--border);background:var(--surface2);}
+.quick-label{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;}
+.quick-btns{display:flex;gap:5px;flex-wrap:wrap;}
+.qb{
+  font-size:12px;padding:5px 11px;
+  border:1px solid var(--border2);border-radius:20px;
+  background:var(--surface);color:var(--text2);cursor:pointer;
+  white-space:nowrap;font-family:'Pretendard',sans-serif;
+  transition:all .12s;
+}
+.qb:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+
+.input-row{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;background:var(--surface);}
+#chat-input{
+  flex:1;border:1.5px solid var(--border);border-radius:var(--r-md);
+  padding:10px 14px;font-size:13.5px;font-family:'Pretendard',sans-serif;
+  resize:none;min-height:42px;max-height:110px;outline:none;
+  color:var(--text1);line-height:1.55;background:var(--surface2);
+  transition:border-color .15s,box-shadow .15s;
+}
+#chat-input:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(26,107,82,.1);}
+#chat-input::placeholder{color:var(--text3);}
+.send-btn{
+  width:42px;height:42px;border-radius:50%;border:none;
+  background:var(--accent);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .15s;
+}
+.send-btn:hover{background:var(--accent-dark);}
+.send-btn i{font-size:17px;color:#fff;}
+
+/* ───── Review ───── */
+.review-box{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:24px;box-shadow:var(--shadow);}
+.hint-box{
+  font-size:13px;color:var(--text2);line-height:1.65;
+  padding:12px 15px;background:var(--accent-light);
+  border-radius:var(--r-sm);margin-bottom:16px;
+  display:flex;gap:8px;align-items:flex-start;border-left:3px solid var(--accent);
+}
+.hint-box i{font-size:15px;color:var(--accent);flex-shrink:0;margin-top:1px;}
+#rev-input{
+  width:100%;min-height:200px;
+  border:1.5px solid var(--border);border-radius:var(--r-md);
+  padding:14px;font-size:13.5px;font-family:'Pretendard',sans-serif;
+  resize:vertical;outline:none;color:var(--text1);line-height:1.65;
+  background:var(--surface2);transition:border-color .15s;
+}
+#rev-input:focus{border-color:var(--accent);background:var(--surface);}
+#rev-input::placeholder{color:var(--text3);}
+.rev-controls{display:flex;gap:8px;margin-top:12px;}
+#rev-type{
+  flex:1;border:1.5px solid var(--border);border-radius:var(--r-sm);
+  padding:9px 12px;font-size:13px;font-family:'Pretendard',sans-serif;
+  color:var(--text1);outline:none;background:var(--surface2);
+  transition:border-color .15s;
+}
+#rev-type:focus{border-color:var(--accent);}
+.rev-btn{
+  padding:9px 22px;border:none;background:var(--accent);color:#fff;
+  border-radius:var(--r-sm);font-size:13px;font-weight:600;
+  font-family:'Pretendard',sans-serif;cursor:pointer;
+  transition:background .15s;white-space:nowrap;
+}
+.rev-btn:hover{background:var(--accent-dark);}
+#rev-result{
+  display:none;margin-top:16px;
+  background:var(--accent-light);border-radius:var(--r-md);
+  padding:16px 18px;font-size:13.5px;line-height:1.75;
+  color:var(--text1);max-height:340px;overflow-y:auto;
+  border-left:3px solid var(--accent);
+}
+#rev-result::-webkit-scrollbar{width:4px;}
+#rev-result::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+
+/* ───── Calc ───── */
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+.calc-card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);}
+.calc-card h3{font-size:14px;font-weight:600;color:var(--text1);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.calc-card h3 i{font-size:17px;color:var(--accent);}
+.calc-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.calc-row label{font-size:12.5px;color:var(--text2);min-width:105px;}
+.calc-row input,.calc-row select{
+  flex:1;border:1.5px solid var(--border);border-radius:var(--r-sm);
+  padding:7px 10px;font-size:13px;font-family:'Pretendard',sans-serif;
+  color:var(--text1);outline:none;background:var(--surface2);
+  transition:border-color .15s;
+}
+.calc-row input:focus,.calc-row select:focus{border-color:var(--accent);}
+.calc-result{background:var(--accent-light);border-radius:var(--r-sm);padding:12px 14px;margin-top:12px;}
+.cr{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--text2);}
+.cr.total{font-weight:600;border-top:1px solid rgba(26,107,82,.2);margin-top:7px;padding-top:9px;color:var(--accent);font-size:14px;}
+.cr-div{height:1px;background:rgba(26,107,82,.15);margin:5px 0;}
+
+/* ───── Info & Law Cards ───── */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
+.info-card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:16px 18px;box-shadow:var(--shadow);}
+.ib{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-bottom:8px;font-weight:500;}
+.ib-g{background:var(--accent-light);color:var(--accent);}
+.ib-b{background:var(--info-bg);color:var(--info);}
+.ib-o{background:var(--warn-bg);color:var(--warn);}
+.ib-p{background:var(--purple-bg);color:var(--purple);}
+.info-card h4{font-size:13.5px;font-weight:600;color:var(--text1);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.info-card h4 i{font-size:15px;color:var(--accent);}
+.info-card p{font-size:12.5px;color:var(--text2);line-height:1.7;}
+.law-list{display:flex;flex-direction:column;gap:12px;}
+.law-card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:16px 18px;box-shadow:var(--shadow);}
+.law-card h4{font-size:13.5px;font-weight:600;color:var(--text1);margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+.law-card h4 i{font-size:15px;color:var(--accent);}
+.law-card p{font-size:13px;color:var(--text2);line-height:1.75;}
+
+/* panel */
+.panel{display:none;animation:fadeIn .18s ease;}
+.panel.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- Setup -->
+<div id="setup">
+  <div class="setup-box">
+    <div class="setup-brand">
+      <div class="ico"><i class="ti ti-building-factory-2"></i></div>
+      <div>
+        <h1>조은시스템 노무·급여 도우미</h1>
+        <p>인사팀 전용 AI 어시스턴트</p>
+      </div>
+    </div>
+    <h2>API 키 설정</h2>
+    <p class="desc">처음 한 번만 입력하면 이후엔 자동으로 로그인돼요.</p>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-t"><a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> 접속 후 로그인</div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-t">좌측 메뉴 → API Keys → Create Key</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-t">생성된 키(sk-ant-...)를 아래 붙여넣기</div></div>
+    </div>
+    <div class="field">
+      <label>Anthropic API Key</label>
+      <input type="password" id="api-key-input" placeholder="sk-ant-api03-...">
+    </div>
+    <button class="btn-primary" onclick="startApp()">시작하기</button>
+    <div class="setup-note">
+      <i class="ti ti-shield-lock"></i>
+      키는 이 기기 브라우저에만 저장되며 외부로 전송되지 않습니다. 비용은 사용량에 따라 청구돼요.
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="ico"><i class="ti ti-building-factory-2"></i></div>
+      <div>
+        <div class="brand-name">조은시스템 노무·급여 도우미</div>
+        <div class="brand-sub">취업규칙(2023.05.01) · 2026년 노동법 · 파견·도급·기간제법</div>
+      </div>
+    </div>
+    <div class="topbar-badges">
+      <span class="badge bdg-g">2026년 기준</span>
+      <span class="badge bdg-b">파견·도급 포함</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-ghost" onclick="changeKey()"><i class="ti ti-key" style="font-size:13px;vertical-align:-1px;margin-right:3px;"></i>키 변경</button>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn on" onclick="sw('chat',this)"><i class="ti ti-message-circle"></i>AI 상담</button>
+    <button class="nav-btn" onclick="sw('rev',this)"><i class="ti ti-file-check"></i>기안 검토</button>
+    <button class="nav-btn" onclick="sw('calc',this)"><i class="ti ti-calculator"></i>급여 계산</button>
+    <button class="nav-btn" onclick="sw('info',this)"><i class="ti ti-book-2"></i>내부 규정</button>
+    <button class="nav-btn" onclick="sw('law',this)"><i class="ti ti-gavel"></i>법령 참조</button>
+  </div>
+
+  <div class="content">
+
+    <!-- Chat -->
+    <div id="chat-panel" class="panel on">
+      <div class="chat-layout">
+        <div class="chat-box">
+          <div id="msgs">
+            <div class="msg b">
+              <div class="av b"><i class="ti ti-building-factory-2"></i></div>
+              <div>
+                <div class="bbl">안녕하세요! 조은시스템 노무·급여 전담 AI 도우미입니다.<br><br>취업규칙(2023.05.01 개정)과 2026년 노동법 기준으로 다음 업무를 지원합니다.<br><br>• 기안서 노무·법적 리스크 검토<br>• 통상임금·포괄임금 판단<br>• 파견·도급 적법성 및 불법파견 검토<br>• 기간제·단시간 근로자 차별 시정<br>• 연차·퇴직금·4대보험 산정<br>• 징계·해고 절차 적법성 확인</div>
+                <div class="msg-time">지금</div>
+              </div>
+            </div>
+          </div>
+          <div class="quick-bar">
+            <div class="quick-label">바로 가기</div>
+            <div class="quick-btns">
+              <button class="qb" onclick="qs('불법파견 판단 기준이 뭐야?')">불법파견 판단</button>
+              <button class="qb" onclick="qs('기간제 근로자 2년 초과하면 어떻게 돼?')">기간제 2년</button>
+              <button class="qb" onclick="qs('통상임금 포함 여부 기준 알려줘')">통상임금</button>
+              <button class="qb" onclick="qs('취업규칙상 연차 사전신청 기한이 며칠이야?')">연차 규정</button>
+              <button class="qb" onclick="qs('대기발령 시 급여는 얼마야?')">대기발령</button>
+              <button class="qb" onclick="qs('수습기간 중 본채용 거절 요건이 뭐야?')">수습 기준</button>
+              <button class="qb" onclick="qs('고객사 계약 종료 시 현장사원 처리 방법은?')">계약종료 처리</button>
+            </div>
+          </div>
+          <div class="input-row">
+            <textarea id="chat-input" placeholder="노무·급여·파견·도급 관련 질문을 입력하세요... (Enter로 전송)" rows="1"></textarea>
+            <button class="send-btn" onclick="sendMsg()"><i class="ti ti-send"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review -->
+    <div id="rev-panel" class="panel">
+      <div class="review-box">
+        <div class="hint-box">
+          <i class="ti ti-info-circle"></i>
+          기안서·규정·조건 등을 붙여넣으면 노무 리스크, 법령·취업규칙 위반 여부를 분석해드립니다.
+        </div>
+        <textarea id="rev-input" placeholder="예시&#10;&#10;[기안 내용]&#10;A사와 IT 시스템 운영 용역계약 체결 예정.&#10;당사 직원 3명을 A사 사무실에 상주시키고, 업무지시는 A사 담당자가 직접 함.&#10;계약기간 2년, 도급 단가로 처리 예정.&#10;&#10;임금 항목, 근로계약 조건, 징계 내용 등도 검토 가능합니다."></textarea>
+        <div class="rev-controls">
+          <select id="rev-type">
+            <option value="general">종합 노무 검토</option>
+            <option value="dispatch">파견·도급 적법성 검토</option>
+            <option value="fixed">기간제·단시간 근로자 검토</option>
+            <option value="wage">임금·통상임금 검토</option>
+            <option value="discipline">징계·해고 절차 검토</option>
+            <option value="leave">휴가·휴직 규정 검토</option>
+            <option value="contract">근로계약 조건 검토</option>
+          </select>
+          <button class="rev-btn" onclick="doReview()">검토 요청 ↗</button>
+        </div>
+        <div id="rev-result"></div>
+      </div>
+    </div>
+
+    <!-- Calc -->
+    <div id="calc-panel" class="panel">
+      <div class="calc-grid">
+        <div class="calc-card">
+          <h3><i class="ti ti-coin"></i>세후 실수령액</h3>
+          <div class="calc-row"><label>월 기본급</label><input type="number" id="c-base" placeholder="예: 3,000,000" oninput="calcNet()"></div>
+          <div class="calc-row"><label>식대 (비과세)</label><input type="number" id="c-meal" placeholder="예: 200,000" oninput="calcNet()"></div>
+          <div class="calc-row"><label>기타 과세 수당</label><input type="number" id="c-etc" placeholder="0" oninput="calcNet()"></div>
+          <div class="calc-row"><label>부양가족 수</label><input type="number" id="c-dep" value="1" min="1" oninput="calcNet()"></div>
+          <div id="net-out" style="display:none">
+            <div class="calc-result">
+              <div class="cr"><span>과세소득</span><span id="r-tx"></span></div>
+              <div class="cr-div"></div>
+              <div class="cr"><span>국민연금 (4.5%)</span><span id="r-nps"></span></div>
+              <div class="cr"><span>건강보험 (3.545%)</span><span id="r-hi"></span></div>
+              <div class="cr"><span>장기요양 (건강×12.95%)</span><span id="r-lc"></span></div>
+              <div class="cr"><span>고용보험 (0.9%)</span><span id="r-ei"></span></div>
+              <div class="cr"><span>소득세</span><span id="r-it"></span></div>
+              <div class="cr"><span>지방소득세 (×10%)</span><span id="r-lt"></span></div>
+              <div class="cr total"><span>실수령액</span><span id="r-net"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="calc-card">
+          <h3><i class="ti ti-clock-dollar"></i>통상임금 시급</h3>
+          <div class="calc-row"><label>월 통상임금 합계</label><input type="number" id="c-ord" placeholder="통상임금 항목 합산" oninput="calcHr()"></div>
+          <div class="calc-row"><label>소정근로시간</label>
+            <select id="c-hrs" oninput="calcHr()">
+              <option value="209">209시간 (주40h, 관리사원)</option>
+              <option value="174">174시간 (주35h)</option>
+            </select>
+          </div>
+          <div id="hr-out" style="display:none">
+            <div class="calc-result">
+              <div class="cr"><span>시간급 통상임금</span><span id="r-h"></span></div>
+              <div class="cr"><span>연장근로 (×1.5)</span><span id="r-ot"></span></div>
+              <div class="cr"><span>야간근로 가산 (×0.5)</span><span id="r-ni"></span></div>
+              <div class="cr"><span>휴일근로 8h 이내 (×1.5)</span><span id="r-h1"></span></div>
+              <div class="cr total"><span>휴일근로 8h 초과 (×2.0)</span><span id="r-h2"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="calc-card">
+          <h3><i class="ti ti-logout"></i>퇴직금</h3>
+          <div class="calc-row"><label>3개월 총 임금</label><input type="number" id="c-3m" placeholder="세전 3개월 합산" oninput="calcRet()"></div>
+          <div class="calc-row"><label>근속 연수</label><input type="number" id="c-yr" placeholder="예: 3" step="0.1" oninput="calcRet()"></div>
+          <div id="ret-out" style="display:none">
+            <div class="calc-result">
+              <div class="cr"><span>1일 평균임금</span><span id="r-da"></span></div>
+              <div class="cr total"><span>퇴직금 (세전)</span><span id="r-ret"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="calc-card">
+          <h3><i class="ti ti-calendar-stats"></i>연차 계산</h3>
+          <div class="calc-row"><label>입사일</label><input type="date" id="c-join" oninput="calcLeave()"></div>
+          <div id="lv-out" style="display:none">
+            <div class="calc-result">
+              <div class="cr"><span>근속 기간</span><span id="r-tenure"></span></div>
+              <div class="cr total"><span>연차 발생 일수</span><span id="r-lv"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div id="info-panel" class="panel">
+      <div class="info-grid">
+        <div class="info-card"><div class="ib ib-g">2026년 기준</div><h4><i class="ti ti-coin"></i>최저임금</h4><p>시급 <strong>10,320원</strong> · 월 환산 <strong>2,156,880원</strong> (209시간 기준)</p></div>
+        <div class="info-card"><div class="ib ib-b">취업규칙 제21·22조</div><h4><i class="ti ti-clock"></i>근무시간</h4><p>관리사원: 09:00~18:00, 휴게 12:00~13:00 (소정 8h/일, 40h/주)<br>현장사원: 근로계약서 따름 (주간·교대 가능)</p></div>
+        <div class="info-card"><div class="ib ib-b">취업규칙 제33·34조</div><h4><i class="ti ti-calendar-time"></i>연차 규정</h4><p>1년 미만 월 1일(최대 11일) / 1년 이상 15일 / 3년 이상 2년마다 +1일(최대 25일)<br>사전신청 14일 전 원칙. 관리사원 회계연도 기준</p></div>
+        <div class="info-card"><div class="ib ib-b">취업규칙 제37조</div><h4><i class="ti ti-heart"></i>경조사 휴가</h4><p>본인결혼 5일 · 배우자출산 최대 10일 · 배우자·부모·자녀 사망 5일<br>조부모·외조부모 사망 1일 · 형제자매 사망 1일 · 자녀결혼 1일</p></div>
+        <div class="info-card"><div class="ib ib-b">취업규칙 제19조</div><h4><i class="ti ti-currency-won"></i>대기발령 급여</h4><p>평균임금의 70% 지급. 단, 근로자 과실 명백 시 무급 가능</p></div>
+        <div class="info-card"><div class="ib ib-b">취업규칙 제10조</div><h4><i class="ti ti-user-check"></i>수습기간</h4><p>3개월 (퇴직금·연차 산정 포함). 본채용 거절 시 서면통보 필수. 해고예고 불요</p></div>
+        <div class="info-card"><div class="ib ib-o">주의</div><h4><i class="ti ti-alert-triangle"></i>통상임금 판단</h4><p>정기성·일률성·고정성 충족 시 해당. 식대·교통비도 전 직원 고정 지급 시 포함 가능. 포괄임금제 적용 시에도 초과분 추가 지급 의무.</p></div>
+        <div class="info-card"><div class="ib ib-g">4대보험 2026</div><h4><i class="ti ti-shield-check"></i>4대보험 요율 (근로자)</h4><p>국민연금 4.5% · 건강보험 3.545% · 장기요양 건강보험료×12.95% · 고용보험 0.9%</p></div>
+      </div>
+    </div>
+
+    <!-- Law -->
+    <div id="law-panel" class="panel">
+      <div class="law-list">
+        <div class="law-card"><div class="ib ib-p">파견근로자보호법</div><h4><i class="ti ti-arrows-exchange"></i>파견 허용 업무 및 기간</h4><p>허용: 32개 전문직종 또는 일시·간헐적 사유(90일 이내, 연 180일). 제조업 직접 생산 공정 원칙 금지.<br>기간: 최대 2년. 초과 시 사용사업주가 직접 고용한 것으로 간주(직접고용 의제).</p></div>
+        <div class="law-card"><div class="ib ib-p">파견법</div><h4><i class="ti ti-alert-triangle"></i>불법파견 판단 기준 5가지</h4><p>① 사용사업주가 업무 지휘·감독권 행사<br>② 배치·변경 결정권이 사용사업주에게 있음<br>③ 사용사업주 설비·기자재 사용<br>④ 전문 기술·자격 불필요한 단순업무<br>⑤ 도급 사업주의 독자적 조직·설비 없음<br><br>불법파견 확인 시 2년 초과 여부 무관하게 직접고용 의무 발생.</p></div>
+        <div class="law-card"><div class="ib ib-o">도급·용역 실무</div><h4><i class="ti ti-file-description"></i>적법 도급 유지 요건</h4><p>• 조은시스템이 현장대리인(제3조 제4항)을 통해 직접 업무지시<br>• 고객사 담당자는 업무 결과물 요청만 가능 (직접 지휘 금지)<br>• 조은시스템 독자적 인사·노무관리 유지<br>• 도급 단가는 업무 완성 기준으로 설정</p></div>
+        <div class="law-card"><div class="ib ib-b">기간제법</div><h4><i class="ti ti-clock"></i>기간제 2년 규정 및 예외</h4><p>기간제 사용 상한 총 2년. 초과 시 무기계약직 간주.<br><br>예외(2년 초과 허용): 사업 완료 필요, 만 55세 이상, 전문직(박사·기술사 등), 정부 복지사업, 결원 대체.<br><br>현장사원 주의: 동일 근로자 반복 계약 시 기간 합산 → 2년 초과 가능성 있음.</p></div>
+        <div class="law-card"><div class="ib ib-b">기간제법</div><h4><i class="ti ti-equal"></i>기간제·단시간 근로자 차별 금지</h4><p>비교 대상 정규직 대비 임금·상여금·성과금·복리후생·훈련 등 합리적 이유 없는 차별 금지.<br>차별시정 신청: 노동위원회, 차별 발생일로부터 6개월 이내.</p></div>
+        <div class="law-card"><div class="ib ib-g">근로기준법·파견법 교차</div><h4><i class="ti ti-users"></i>사용사업주 연대책임</h4><p>임금 미지급 시: 파견사업주(조은시스템) 1차 책임, 사용사업주 연대책임.<br>산업재해: 사용사업주도 산업안전보건법상 의무 부담.<br>부당해고: 사용거부(파견거부) 시 실질적 해고로 볼 수 있음.</p></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var SYSTEM="당신은 ㈜조은시스템의 노무·급여 전담 AI 어시스턴트입니다.\n\n[회사 정보]\n- 회사명: ㈜조은시스템 (서울시 영등포구 선유로70 902호)\n- 사업종류: 사업서비스업 (도급·용역·파견 등)\n- 취업규칙: 2023년 05월 01일 개정 / 근로자 수: 3,528명\n\n[취업규칙 핵심 내용]\n- 사원 구분: 관리사원(09:00~18:00, 휴게 12:00~13:00, 주40h) / 현장사원(근로계약서 따름, 교대근무 가능)\n- 현장사원: 고객사와의 도급·용역·파견 계약 기간 동안 채용. 현장대리인이 지휘체계 담당\n- 수습기간: 3개월, 퇴직금·연차 산정 포함, 본채용 거절 시 서면통보 필수, 해고예고 불요\n- 연장근로: 주 12시간 한도. 연장·야간·휴일 통상임금 50% 가산, 8h 초과 휴일근로 100% 가산\n- 연차: 1년 미만 월1일(최대 11일), 1년 이상 15일, 3년 이상 2년마다+1일(최대 25일). 사용신청 14일 전 원칙. 관리사원 회계연도 기준, 현장사원 미사용수당 월급 포함 가능\n- 유급휴일: 관공서 공휴일, 근로자의 날, 주휴일\n- 경조사 휴가: 본인결혼 5일, 배우자출산 최대 10일, 배우자·부모·자녀 사망 5일, 조부모 사망 1일, 형제자매 사망 1일, 자녀결혼 1일\n- 병가: 연간 15일 한도, 무급, 연차 선소진 후 신청, 퇴직금 산정 미포함\n- 육아휴직: 만 8세 이하 또는 초등 2학년 이하 자녀, 계속근로 6개월 미만 불허 가능\n- 대기발령: 평균임금 70% 지급, 근로자 과실 명백 시 무급 가능\n- 임금 지급일: 다음 달 10일 또는 12일. 시간급=월통상임금÷209(관리사원)\n- 퇴직금: 1년 이상 근속, 계속근로 1년당 30일분 평균임금\n- 징계: 견책/감봉/정직(3월 이내)/해고, 인사위원회 의결, 소명 기회 부여 필수\n- 해고예고: 30일 전 예고 또는 30일분 통상임금. 예외: 3개월 미만, 천재사변, 고의 손해\n- 정년: 만 60세 도달하는 달의 말일 (특수경비원 전일)\n- 당연퇴직 사유: 고객사 계약 만료·중도 해지 시 (제64조 제5호)\n\n[2026년 노동법 기준]\n- 최저시급: 10,320원 (월 2,156,880원)\n- 4대보험(근로자): 국민연금 4.5%, 건강보험 3.545%, 장기요양 건강보험료×12.95%, 고용보험 0.9%\n- 통상임금: 정기성·일률성·고정성 충족 시 해당\n- 출산전후휴가: 90일(다태아 120일), 출산 후 45일 이상 보장\n- 육아휴직 급여: 통상임금 80%(상한 150만원), 12개월, 분할 최대 3회\n\n[파견근로자보호법]\n- 파견 허용: 32개 전문직종 또는 일시·간헐적 사유(90일 이내, 연 180일). 제조업 직접 생산 공정 금지\n- 파견 기간: 최대 2년. 초과 시 직접고용 의제\n- 불법파견 판단: ①사용사업주 지휘감독 ②배치·변경 결정권 ③설비·기자재 사용 ④단순업무 ⑤독자 조직·설비 없음\n- 불법파견 시: 2년 초과 무관 직접고용 의무\n- 파견근로자 균등대우: 동종·유사 정규직 대비 차별 금지. 노동위원회 차별시정(3년 이내)\n- 연대책임: 임금 미지급 시 사용사업주 연대책임. 산재 시 사용사업주 안전보건 의무\n\n[기간제법]\n- 기간제 상한: 총 2년. 초과 시 무기계약직 간주\n- 예외: 사업 완료, 만 55세 이상, 전문직, 정부 복지사업, 결원 대체\n- 현장사원 주의: 동일 근로자 반복 계약 시 기간 합산 → 2년 초과 가능\n- 차별 금지: 임금·상여·성과금·복리후생·훈련 차별 금지. 차별시정 6개월 이내\n\n[답변 원칙]\n1. 취업규칙 조항 번호(예: 제33조)를 반드시 명시하세요.\n2. 법령명도 함께 명시하세요.\n3. 법령과 취업규칙 충돌 시 근로자에게 유리한 쪽 적용.\n4. 기안 검토 시: 노무 리스크 → 법령 위반 → 취업규칙 위반 → 수정 제안 순서.\n5. 통상임금 검토 시 정기성·일률성·고정성 각각 판단.\n6. 파견·도급 검토 시 불법파견 여부 반드시 확인.\n7. 복잡한 사안은 노무사 자문 권유.\n8. 간결하고 실무에서 바로 활용 가능하게 답변하세요.";
+
+var hist=[];
+var apiKey='';
+
+function startApp(){
+  var k=document.getElementById('api-key-input').value.trim();
+  if(!k||!k.startsWith('sk-')){alert('올바른 API 키를 입력해주세요. (sk-ant-... 형태)');return;}
+  apiKey=k;
+  try{localStorage.setItem('joeun_key',k);}catch(e){}
+  document.getElementById('setup').style.display='none';
+  document.getElementById('app').style.display='flex';
+}
+
+function changeKey(){
+  apiKey='';
+  try{localStorage.removeItem('joeun_key');}catch(e){}
+  document.getElementById('setup').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('api-key-input').value='';
+}
+
+(function(){
+  try{
+    var k=localStorage.getItem('joeun_key');
+    if(k&&k.startsWith('sk-')){
+      apiKey=k;
+      document.getElementById('setup').style.display='none';
+      document.getElementById('app').style.display='flex';
+    }
+  }catch(e){}
+})();
+
+function gt(){
+  var d=new Date(),h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0');
+  return(h<12?'오전 ':'오후 ')+(h>12?h-12:h===0?12:h)+':'+m;
+}
+
+function addMsg(r,t){
+  var isU=r==='user';
+  var w=document.createElement('div');
+  w.className='msg '+(isU?'u':'b');
+  var f=t.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  w.innerHTML='<div class="av '+(isU?'u':'b')+'"><i class="ti ti-'+(isU?'user':'building-factory-2')+'"></i></div>'
+    +'<div><div class="bbl">'+f+'</div><div class="msg-time">'+gt()+'</div></div>';
+  document.getElementById('msgs').appendChild(w);
+  document.getElementById('msgs').scrollTop=99999;
+}
+
+function showTyp(){
+  var d=document.createElement('div');
+  d.className='typing-row';d.id='typ';
+  d.innerHTML='<div class="av b"><i class="ti ti-building-factory-2"></i></div>'
+    +'<div class="typing-bbl"><span></span><span></span><span></span></div>';
+  document.getElementById('msgs').appendChild(d);
+  document.getElementById('msgs').scrollTop=99999;
+}
+
+function callAPI(messages,cb){
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,system:SYSTEM,messages:messages})
+  }).then(function(r){return r.json();})
+    .then(function(d){
+      if(d.error){cb(new Error(d.error.message),null);return;}
+      var t=d.content&&d.content.find(function(b){return b.type==='text';});
+      cb(null,t?t.text:'응답을 받지 못했습니다.');
+    })
+    .catch(function(e){cb(e,null);});
+}
+
+function sendMsg(){
+  var el=document.getElementById('chat-input');
+  var txt=el.value.trim();
+  if(!txt)return;
+  if(!apiKey){alert('API 키를 먼저 설정해주세요.');return;}
+  el.value='';el.style.height='auto';
+  addMsg('user',txt);
+  hist.push({role:'user',content:txt});
+  showTyp();
+  callAPI(hist,function(err,reply){
+    var t=document.getElementById('typ');if(t)t.remove();
+    var msg=err?'오류: '+err.message:reply;
+    addMsg('bot',msg);
+    if(!err)hist.push({role:'assistant',content:reply});
+  });
+}
+
+function doReview(){
+  var txt=document.getElementById('rev-input').value.trim();
+  var type=document.getElementById('rev-type').value;
+  if(!txt){alert('검토할 내용을 입력해주세요.');return;}
+  if(!apiKey){alert('API 키를 먼저 설정해주세요.');return;}
+  var labels={general:'종합 노무',dispatch:'파견·도급 적법성',fixed:'기간제·단시간',wage:'임금·통상임금',discipline:'징계·해고 절차',leave:'휴가·휴직',contract:'근로계약 조건'};
+  var out=document.getElementById('rev-result');
+  out.style.display='block';
+  out.innerHTML='<span style="color:var(--text3);font-size:13px;">검토 중입니다...</span>';
+  var extra=type==='dispatch'?' 특히 불법파견 해당 여부를 중점 검토해주세요.':type==='fixed'?' 기간제 2년 규정 및 차별 처우 여부를 중점 검토해주세요.':'';
+  var prompt='다음 내용에 대해 ['+labels[type]+'] 관점에서 검토해주세요.'+extra+'\n\n검토 대상:\n'+txt+'\n\n다음 순서로 답변해주세요:\n① 노무 리스크\n② 법령 위반 여부 (법령명·조항 명시)\n③ 취업규칙 위반 여부 (조항 명시)\n④ 수정·보완 제안';
+  callAPI([{role:'user',content:prompt}],function(err,reply){
+    if(err){out.innerHTML='<span style="color:red;font-size:13px;">오류: '+err.message+'</span>';return;}
+    out.innerHTML=reply.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  });
+}
+
+function qs(t){
+  document.getElementById('chat-input').value=t;
+  sendMsg();
+}
+
+function sw(name,btn){
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+  document.getElementById(name+'-panel').classList.add('on');
+}
+
+function fmt(n){return Math.round(n).toLocaleString('ko-KR')+'원';}
+
+function calcNet(){
+  var base=parseFloat(document.getElementById('c-base').value)||0;
+  var meal=parseFloat(document.getElementById('c-meal').value)||0;
+  var etc=parseFloat(document.getElementById('c-etc').value)||0;
+  var dep=parseInt(document.getElementById('c-dep').value)||1;
+  if(base<1){document.getElementById('net-out').style.display='none';return;}
+  var taxable=base+etc;
+  var nps=taxable*0.045,hi=taxable*0.03545,lc=hi*0.1295,ei=taxable*0.009;
+  var tb=taxable-(nps+hi+lc+ei);
+  var tax=0;
+  if(tb>10000000)tax=(tb-10000000)*0.35+1190000;
+  else if(tb>8800000)tax=(tb-8800000)*0.24+778000;
+  else if(tb>4600000)tax=(tb-4600000)*0.15+518000;
+  else if(tb>1400000)tax=(tb-1400000)*0.15;
+  else if(tb>1000000)tax=(tb-1000000)*0.06;
+  tax=Math.max(0,tax-(dep-1)*15000);
+  var lt=tax*0.1,net=(base+meal+etc)-(nps+hi+lc+ei+tax+lt);
+  document.getElementById('r-tx').textContent=fmt(taxable);
+  document.getElementById('r-nps').textContent='-'+fmt(nps);
+  document.getElementById('r-hi').textContent='-'+fmt(hi);
+  document.getElementById('r-lc').textContent='-'+fmt(lc);
+  document.getElementById('r-ei').textContent='-'+fmt(ei);
+  document.getElementById('r-it').textContent='-'+fmt(tax);
+  document.getElementById('r-lt').textContent='-'+fmt(lt);
+  document.getElementById('r-net').textContent=fmt(net);
+  document.getElementById('net-out').style.display='block';
+}
+
+function calcHr(){
+  var ord=parseFloat(document.getElementById('c-ord').value)||0;
+  var hrs=parseFloat(document.getElementById('c-hrs').value)||209;
+  if(ord<1){document.getElementById('hr-out').style.display='none';return;}
+  var h=ord/hrs;
+  document.getElementById('r-h').textContent=Math.round(h).toLocaleString('ko-KR')+'원/시';
+  document.getElementById('r-ot').textContent=Math.round(h*1.5).toLocaleString('ko-KR')+'원/시';
+  document.getElementById('r-ni').textContent=Math.round(h*0.5).toLocaleString('ko-KR')+'원/시 (기본급에 가산)';
+  document.getElementById('r-h1').textContent=Math.round(h*1.5).toLocaleString('ko-KR')+'원/시';
+  document.getElementById('r-h2').textContent=Math.round(h*2.0).toLocaleString('ko-KR')+'원/시';
+  document.getElementById('hr-out').style.display='block';
+}
+
+function calcRet(){
+  var m3=parseFloat(document.getElementById('c-3m').value)||0;
+  var yr=parseFloat(document.getElementById('c-yr').value)||0;
+  if(m3<1||yr<1){document.getElementById('ret-out').style.display='none';return;}
+  var da=m3/90,ret=da*30*yr;
+  document.getElementById('r-da').textContent=fmt(da);
+  document.getElementById('r-ret').textContent=fmt(ret);
+  document.getElementById('ret-out').style.display='block';
+}
+
+function calcLeave(){
+  var join=document.getElementById('c-join').value;
+  if(!join){document.getElementById('lv-out').style.display='none';return;}
+  var jd=new Date(join),now=new Date();
+  var months=Math.floor((now-jd)/(1000*60*60*24*30.44));
+  var years=months/12,days,tenure;
+  if(years<1){days=Math.min(11,Math.floor(months));tenure=Math.floor(months)+'개월';}
+  else{var y=Math.floor(years);tenure=y+'년 '+Math.floor(months%12)+'개월';days=Math.min(25,15+Math.floor((y-1)/2));}
+  document.getElementById('r-tenure').textContent=tenure;
+  document.getElementById('r-lv').textContent=days+'일';
+  document.getElementById('lv-out').style.display='block';
+}
+
+document.getElementById('chat-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}
+});
+document.getElementById('chat-input').addEventListener('input',function(){
+  this.style.height='auto';
+  this.style.height=Math.min(this.scrollHeight,110)+'px';
+});
+document.getElementById('api-key-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter')startApp();
+});
+</script>
+</body>
+</html>
